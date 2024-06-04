@@ -1,11 +1,12 @@
 package data;
 
-import java.util.ArrayList;
-import java.util.Scanner;
-
 import com.main.LibrarySystem;
+import exception.custom.InvalidChoice;
 import util.iMenu;
 import books.*;
+
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Student extends User implements iMenu {
     private String name;
@@ -37,28 +38,32 @@ public class Student extends User implements iMenu {
     @Override
     public void menu() {
         Scanner scanner = new Scanner(System.in);
-        int choice;
+        int choice = 0;
         do {
-            System.out.print("===== Menu Student =====\n1. Tampilkan Buku yang dipinjam\n2. Pinjam Buku\n3. Kembalikan Buku\n4. Logout\nPilih antara (1-4): ");
-            choice = scanner.nextInt();
+            try {
+                System.out.print("===== Menu Student =====\n1. Tampilkan Buku yang dipinjam\n2. Pinjam Buku\n3. Kembalikan Buku\n4. Logout\nPilih antara (1-4): ");
+                choice = scanner.nextInt();
+                if(choice > 4 || choice < 1) {
+                    throw new InvalidChoice("Pilihan anda tidak valid !\n");
+                }
 
-            switch (choice) {
-                case 1:
-                    showBorrowedBooks();
-                    break;
-                case 2:
-                    isLogout = false;
-                    choiceBook();
-                    break;
-                case 3:
-                    returnBook();
-                    break;
-                case 4:
-                    logout();
-                    break;
-                default:
-                    System.out.println("Pilihan invalid !\n");
-                    break;
+                switch (choice) {
+                    case 1:
+                        showBorrowedBooks();
+                        break;
+                    case 2:
+                        isLogout = false;
+                        choiceBook();
+                        break;
+                    case 3:
+                        returnBook();
+                        break;
+                    case 4:
+                        logout();
+                        break;
+                }
+            } catch (InvalidChoice e) {
+                System.out.println(e.getMessage());
             }
         } while(choice != 4);
     }
@@ -144,7 +149,7 @@ public class Student extends User implements iMenu {
         menu();
     }
 
-    private void returnBook() { // NEED FIXING
+    private void returnBook() {
         if (getBorrowedBooks().isEmpty()) {
             System.out.println("Anda belum meminjam buku ...");
             return;
@@ -171,6 +176,12 @@ public class Student extends User implements iMenu {
         System.out.print("Pilih buku yang akan dikembalikan (nomor): ");
         int choice = scanner.nextInt();
         scanner.nextLine();
+
+        // Sending the borrowedBook value of the returned book
+        System.out.print("Masukkan ID Buku yang ingin dikembalikan : ");
+        String bookId = scanner.next();
+        Book sB = idBookFinder(bookId); //String bookId, String title, String author, String category, int stock
+        User.updateStock(sB.getbookId(), sB.getStock()+1);
 
         LibrarySystem lS = new LibrarySystem();
         for(Book book : getBorrowedBooks()) {

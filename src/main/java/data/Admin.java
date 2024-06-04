@@ -1,5 +1,7 @@
 package data;
 
+import exception.custom.InvalidChoice;
+import exception.custom.illegalAdminAccess;
 import util.iMenu;
 import com.main.LibrarySystem;
 import books.*;
@@ -16,30 +18,35 @@ public class Admin extends User implements iMenu {
 
     @Override
     public void menu() {
-        System.out.print("===== Menu Admin =====\n1. Tambah Mahasiswa\n2. Tampilkan Mahasiswa\n3. Input Buku\n4. Tampilkan Daftar Buku\n5. Logout\nPilih antara (1-5): ");
-        int choice = scanner.nextInt();
+        try {
+            System.out.print("===== Menu Admin =====\n1. Tambah Mahasiswa\n2. Tampilkan Mahasiswa\n3. Input Buku\n4. Tampilkan Daftar Buku\n5. Logout\nPilih antara (1-5): ");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+            if(choice > 5 || choice < 1) {
+                throw new InvalidChoice("Pilihan tidak valid!\n");
+            }
 
-        switch (choice) {
-            case 1:
-                addStudent();
-                break;
-            case 2:
-                LibrarySystem.addTempStudent();
-                displayStudents();
-                break;
-            case 3:
-                inputBook();
-                break;
-            case 4:
-                LibrarySystem.addTempBooks();
-                displayBooks();
-                break;
-            case 5:
-                System.out.println("Logout berhasil.\n");
-                break;
-            default:
-                System.out.println("Pilihan tidak valid!\n");
-                break;
+            switch (choice) {
+                case 1:
+                    addStudent();
+                    break;
+                case 2:
+                    LibrarySystem.addTempStudent();
+                    displayStudents();
+                    break;
+                case 3:
+                    inputBook();
+                    break;
+                case 4:
+                    LibrarySystem.addTempBooks();
+                    displayBooks();
+                    break;
+                case 5:
+                    System.out.println("Logout berhasil.\n");
+                    break;
+            }
+        } catch (InvalidChoice e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -55,9 +62,20 @@ public class Admin extends User implements iMenu {
             System.out.println("User Admin tidak ditemukan\n");
         }
     }
+
     public boolean isAdmin(String username, String password) {
-        return username.equals(adminUsername) && password.equals(adminPassword);
+        try {
+            if( !(username.equals(adminUsername) && password.equals(adminPassword)) ) {
+                throw new illegalAdminAccess("\nInvalid Credentials");
+            }
+        } catch (illegalAdminAccess e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+
+        return true;
     }
+
     public void addStudent() {
         System.out.print("Masukkan Nama: ");
         String name = scanner.next();

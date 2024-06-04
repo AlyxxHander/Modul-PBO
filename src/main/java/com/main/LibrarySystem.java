@@ -1,10 +1,10 @@
 package com.main;
 
 import data.Admin;
+import data.Student;
 
 import java.util.ArrayList;
 import java.util.Scanner;
-import data.Student;
 
 public class LibrarySystem {
     private static Admin admin = new Admin();
