@@ -1,7 +1,9 @@
 package data;
 
 import books.Book;
+import com.main.LibrarySystem;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class User {
@@ -9,23 +11,10 @@ public class User {
     private static Book book = new Book("", "", "", "", 0);
     
     public void displayBooks() {
-        int iterator = 1;
-        if(bookList.isEmpty()) {
-            System.out.println("Belum ada buku yang diinput ...");
-            System.out.println("Kembali ke menu\n");
-
-            Student student = new Student("", "", "", "");
-            student.menu();
-        }
-        else {
-            template("No", "Id Buku", "Judul", "Author", "Category", "Stok");
-
-            for (Book book : bookList) {
-                if (book != null) {
-                    System.out.println("<" + iterator + "> " + book.getbookId() + " - " + book.getTitle() + " - " + book.getAuthor() + " - " + book.getCategory() + " - " + book.getStock());
-                }
-                iterator++;
-            }
+        try {
+            LibrarySystem.tableViewStartingGUI();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
     }
 
@@ -43,7 +32,7 @@ public class User {
         int i = 0;
         User user = new User();
         for (Book book : user.getBookList()) {
-            if (book != null && book.getbookId().equals(bookId)) {
+            if (book != null && book.getBookId().equals(bookId)) {
                 return i;
             }
 

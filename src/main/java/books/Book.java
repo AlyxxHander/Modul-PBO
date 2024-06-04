@@ -28,7 +28,7 @@ public class Book {
         this.duration = duration;
     }
 
-    public String getbookId() {
+    public String getBookId() {
         return bookId;
     }
     public void setBookId(String bookId) {
